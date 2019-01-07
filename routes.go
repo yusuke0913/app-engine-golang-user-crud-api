@@ -24,7 +24,7 @@ func Register(r *mux.Router) {
 
 func addV1Routes(r *mux.Router) {
 	r.HandleFunc("/users", createUser).Methods("POST")
-	r.HandleFunc("/users", listUsers).Methods("GET")
+	r.HandleFunc("/users", getUserList).Methods("GET")
 	r.HandleFunc("/users/{id}", findUser).Methods("GET")
 	r.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
 	r.HandleFunc("/users/{id}", updateUser).Methods("PUT")
@@ -36,6 +36,7 @@ type requester interface {
 type responser interface {
 }
 
+// create
 type userCreateRequest struct {
 	User *User `json:"user"`
 }
@@ -103,6 +104,11 @@ func writeErrorResponse(w http.ResponseWriter, message string) {
 	json.NewEncoder(w).Encode(res)
 }
 
+//
+func newRepository() *datastoreRepository {
+	return &datastoreRepository{}
+}
+
 func createUser(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
@@ -130,7 +136,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err = repository.Create(ctx, user)
 	if err != nil {
 		log.Printf("UserCreateError	err:%v", err)
@@ -146,7 +152,7 @@ func findUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	user, err := repository.Find(ctx, id)
 
 	if err != nil {
@@ -167,7 +173,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.Delete(ctx, id)
 	if err != nil {
 		log.Printf("DeleteUser	err:%v", err)
@@ -195,7 +201,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	user, err := repository.Find(ctx, id)
 
 	if err != nil || user == nil {
@@ -219,10 +225,10 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
-func listUsers(w http.ResponseWriter, r *http.Request) {
+func getUserList(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	users, err := repository.List(ctx)
 	if err != nil {
 		log.Fatalf("ListUser	err:%v", err)

@@ -8,10 +8,10 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-type UserDatastoreRepository struct {
+type datastoreRepository struct {
 }
 
-var _ IUserRepository = &UserDatastoreRepository{}
+var _ IUserRepository = &datastoreRepository{}
 
 const (
 	kind = "User"
@@ -44,7 +44,7 @@ func newKeysByIds(ctx context.Context, ids []string) ([]*datastore.Key, error) {
 	return keys, nil
 }
 
-func (repository *UserDatastoreRepository) Create(ctx context.Context, user *User) error {
+func (repository *datastoreRepository) Create(ctx context.Context, user *User) error {
 
 	err := user.isValid()
 	if err != nil {
@@ -64,7 +64,7 @@ func (repository *UserDatastoreRepository) Create(ctx context.Context, user *Use
 	return nil
 }
 
-func (repository *UserDatastoreRepository) CreateMulti(ctx context.Context, userList []*User) error {
+func (repository *datastoreRepository) CreateMulti(ctx context.Context, userList []*User) error {
 
 	if len(userList) == 0 {
 		return fmt.Errorf("datastore: userList can not be empty")
@@ -90,7 +90,7 @@ func (repository *UserDatastoreRepository) CreateMulti(ctx context.Context, user
 	return nil
 }
 
-func (repository *UserDatastoreRepository) Find(ctx context.Context, id string) (*User, error) {
+func (repository *datastoreRepository) Find(ctx context.Context, id string) (*User, error) {
 	key := datastore.NewKey(ctx, kind, id, 0, nil)
 	user := &User{}
 	if err := datastore.Get(ctx, key, user); err != nil {
@@ -100,7 +100,7 @@ func (repository *UserDatastoreRepository) Find(ctx context.Context, id string) 
 	return user, nil
 }
 
-func (repository *UserDatastoreRepository) FindMulti(ctx context.Context, ids []string) ([]*User, error) {
+func (repository *datastoreRepository) FindMulti(ctx context.Context, ids []string) ([]*User, error) {
 
 	if len(ids) == 0 {
 		return nil, fmt.Errorf("datastore: ids can not be empty")
@@ -123,7 +123,7 @@ func (repository *UserDatastoreRepository) FindMulti(ctx context.Context, ids []
 	return userList, nil
 }
 
-func (repository *UserDatastoreRepository) Delete(ctx context.Context, id string) error {
+func (repository *datastoreRepository) Delete(ctx context.Context, id string) error {
 	user, err := repository.Find(ctx, id)
 	if err != nil {
 		return err
@@ -140,7 +140,7 @@ func (repository *UserDatastoreRepository) Delete(ctx context.Context, id string
 	return nil
 }
 
-func (repository *UserDatastoreRepository) DeleteMulti(ctx context.Context, userList []*User) error {
+func (repository *datastoreRepository) DeleteMulti(ctx context.Context, userList []*User) error {
 
 	if len(userList) == 0 {
 		return fmt.Errorf("datastore: userList can not be empty")
@@ -162,7 +162,7 @@ func (repository *UserDatastoreRepository) DeleteMulti(ctx context.Context, user
 	return nil
 }
 
-func (repository *UserDatastoreRepository) Update(ctx context.Context, user *User) error {
+func (repository *datastoreRepository) Update(ctx context.Context, user *User) error {
 	if user.Id == "" {
 		return fmt.Errorf("user id empty User: %v", user)
 	}
@@ -175,7 +175,7 @@ func (repository *UserDatastoreRepository) Update(ctx context.Context, user *Use
 	return nil
 }
 
-func (repository *UserDatastoreRepository) List(ctx context.Context) ([]*User, error) {
+func (repository *datastoreRepository) List(ctx context.Context) ([]*User, error) {
 	q := datastore.NewQuery(kind).Order("-CreatedAt").Limit(20)
 	var users []*User
 	keys, err := q.GetAll(ctx, &users)

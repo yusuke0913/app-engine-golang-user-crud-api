@@ -12,7 +12,7 @@ import (
 )
 
 func resetDatastore(ctx context.Context, t *testing.T) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	userList, err := repository.List(ctx)
 	if err != nil {
 		t.Fatalf("err:%v", err)
@@ -140,7 +140,7 @@ func testRun(ctx context.Context, t *testing.T, name string, f func(t *testing.T
 
 func test_CreateMulti_WhenPassingEmptyIds_ReturnError(ctx context.Context, t *testing.T) {
 	var userList []*User
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.CreateMulti(ctx, userList)
 	if err == nil {
 		t.Errorf("Error must be thrown")
@@ -155,7 +155,7 @@ func test_CreateMulti_WhenPassingInvalidIds_ReturnError(ctx context.Context, t *
 		userList = append(userList, dummyUser)
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.CreateMulti(ctx, userList)
 	if err == nil {
 		t.Errorf("Error must be thrown")
@@ -170,7 +170,7 @@ func test_CreateMulti_WhenPassingValidUserList_ReturnNonError(ctx context.Contex
 		userList = append(userList, dummyUser)
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.CreateMulti(ctx, userList)
 	if err != nil {
 		t.Errorf("err:%v", err)
@@ -190,7 +190,7 @@ func test_CreateMulti_WhenPassingValidUserList_ReturnNonError(ctx context.Contex
 }
 
 func test_Create_WhenPassingInvalidUser_ReturnErr(ctx context.Context, t *testing.T, user *User) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.Create(ctx, user)
 	if err == nil {
 		t.Errorf("Error must be thrown")
@@ -198,7 +198,7 @@ func test_Create_WhenPassingInvalidUser_ReturnErr(ctx context.Context, t *testin
 }
 
 func test_Create_WhenPassingValidUser_ReturnNonErr(ctx context.Context, t *testing.T) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	user := newDummyUser()
 	err := repository.Create(ctx, user)
 	if err != nil {
@@ -207,7 +207,7 @@ func test_Create_WhenPassingValidUser_ReturnNonErr(ctx context.Context, t *testi
 }
 
 func test_Find_WhenPassingExistingId_ReturnTheUser(ctx context.Context, t *testing.T) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 
 	user := newDummyUser()
 
@@ -226,7 +226,7 @@ func test_Find_WhenPassingExistingId_ReturnTheUser(ctx context.Context, t *testi
 }
 
 func test_Find_WithNotExistingId_ReturnErr(ctx context.Context, t *testing.T) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	_, err := repository.Find(ctx, "")
 	if err == nil {
 		t.Errorf("User should be null")
@@ -235,7 +235,7 @@ func test_Find_WithNotExistingId_ReturnErr(ctx context.Context, t *testing.T) {
 
 func test_FindMulti_WhenPassingEmptyIds_ReturnError(ctx context.Context, t *testing.T) {
 	var ids []string
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	foundUserList, err := repository.FindMulti(ctx, ids)
 
 	if err == nil {
@@ -253,7 +253,7 @@ func test_FindMulti_WhenPassingInvalidIds_ReturnError(ctx context.Context, t *te
 		ids = append(ids, "")
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	foundUserList, err := repository.FindMulti(ctx, ids)
 	if err == nil {
 		t.Errorf("Error must be thrown")
@@ -272,7 +272,7 @@ func test_FindMulti_WhenPassingValidUserList_ReturnTheUserList(ctx context.Conte
 		ids = append(ids, u.Id)
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	foundUserList, err := repository.FindMulti(ctx, ids)
 	if err != nil {
 		t.Errorf("err:%v", err)
@@ -285,7 +285,7 @@ func test_FindMulti_WhenPassingValidUserList_ReturnTheUserList(ctx context.Conte
 
 func test_Delete_WhenPassingNonExistingUser_ReturnError(ctx context.Context, t *testing.T) {
 	dummyId := uuid.New().String()
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 
 	// user1, err := repository.Find(ctx, dummyId)
 	// log.Printf("user:%v", user1)
@@ -302,7 +302,7 @@ func test_Delete_WhenPassingExistingUser_ReturnNonError(ctx context.Context, t *
 
 	createDummyUser(ctx, t, dummyUser)
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 
 	// user1, err := repository.Find(ctx, dummyId)
 	// log.Printf("user:%v", user1)
@@ -322,7 +322,7 @@ func test_DeleteMulti_WhenPassingValidUserList_ReturnNonError(ctx context.Contex
 
 	userList := setupDummyUserList(ctx, t)
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.DeleteMulti(ctx, userList)
 	if err != nil {
 		t.Errorf("err:%v", err)
@@ -334,7 +334,7 @@ func test_DeleteMulti_WhenPassingValidUserList_ReturnNonError(ctx context.Contex
 func test_DeleteMulti_WhenPassingEmptyIds_ReturnError(ctx context.Context, t *testing.T) {
 
 	var userList []*User
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.DeleteMulti(ctx, userList)
 	if err == nil {
 		t.Errorf("Error must be thrown")
@@ -349,7 +349,7 @@ func test_DeleteMulti_WhenPassingInvalidIds_ReturnError(ctx context.Context, t *
 		userList = append(userList, dummyUser)
 	}
 
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.DeleteMulti(ctx, userList)
 	if err == nil {
 		t.Errorf("Error must be thrown")
@@ -357,7 +357,7 @@ func test_DeleteMulti_WhenPassingInvalidIds_ReturnError(ctx context.Context, t *
 }
 
 func test_Update_WhenPassingEmptyId_ReturnError(ctx context.Context, t *testing.T) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	dummyUser := newDummyUserWithEmptyId()
 	err := repository.Update(ctx, dummyUser)
 	if err == nil {
@@ -366,7 +366,7 @@ func test_Update_WhenPassingEmptyId_ReturnError(ctx context.Context, t *testing.
 }
 
 func test_Update_WhenPassingChangedNameUser_ReturnUpdatedUser(ctx context.Context, t *testing.T) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	dummyUser := newDummyUser()
 	createDummyUser(ctx, t, dummyUser)
 	// log.Printf("dummyUser:%#v", dummyUser)
@@ -396,7 +396,7 @@ func test_Update_WhenPassingChangedNameUser_ReturnUpdatedUser(ctx context.Contex
 
 func test_List_ReturnUserList(ctx context.Context, t *testing.T) {
 	setupDummyUserList(ctx, t)
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	users, err := repository.List(ctx)
 	if err != nil {
 		t.Errorf("err:%v", err)
@@ -420,7 +420,7 @@ func createDummyUser(ctx context.Context, t *testing.T, u *User) {
 }
 
 func createDummyUsers(ctx context.Context, t *testing.T, userList []*User) {
-	repository := UserDatastoreRepository{}
+	repository := newRepository()
 	err := repository.CreateMulti(ctx, userList)
 	if err != nil {
 		t.Errorf("err:%v", err)

@@ -146,7 +146,7 @@ var apiTests = []apiTest{
 		request:             nil,
 		setupFunc:           setupDummyUserListWithApiTestCase,
 		expectedStatusCode:  http.StatusOK,
-		httpHandlerFunc:     listUsers,
+		httpHandlerFunc:     getUserList,
 		responseHandlerFunc: testUserListResponse,
 	},
 }
