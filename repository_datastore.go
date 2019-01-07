@@ -24,7 +24,7 @@ func newKey(ctx context.Context, id string) *datastore.Key {
 func newKeys(ctx context.Context, userList []*User) ([]*datastore.Key, error) {
 	var keys []*datastore.Key
 	for _, u := range userList {
-		err := isValidUser(u)
+		err := u.isValid()
 		if err != nil {
 			return nil, err
 		}
@@ -44,20 +44,9 @@ func newKeysByIds(ctx context.Context, ids []string) ([]*datastore.Key, error) {
 	return keys, nil
 }
 
-func isValidUser(u *User) error {
-	if u.Id == "" {
-		return fmt.Errorf("datastore: user id empty User: %v", u)
-	}
-
-	if u.Name == "" {
-		return fmt.Errorf("datastore: user name empty User: %v", u)
-	}
-	return nil
-}
-
 func (repository *UserDatastoreRepository) Create(ctx context.Context, user *User) error {
 
-	err := isValidUser(user)
+	err := user.isValid()
 	if err != nil {
 		return err
 	}
@@ -83,7 +72,7 @@ func (repository *UserDatastoreRepository) CreateMulti(ctx context.Context, user
 
 	var keys []*datastore.Key
 	for _, u := range userList {
-		err := isValidUser(u)
+		err := u.isValid()
 		if err != nil {
 			return err
 		}

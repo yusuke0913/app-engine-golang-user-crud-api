@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -11,6 +12,17 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `datastore:",noindex" json:"updatedAt"`
 	// Key *datastore.Key `datastore:"__key__" json:"-"`
+}
+
+func (u *User) isValid() error {
+	if u.Id == "" {
+		return fmt.Errorf("datastore: user id empty User: %v", u)
+	}
+
+	if u.Name == "" {
+		return fmt.Errorf("datastore: user name empty User: %v", u)
+	}
+	return nil
 }
 
 type IUserRepository interface {
