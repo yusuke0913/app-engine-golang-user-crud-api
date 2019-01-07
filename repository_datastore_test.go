@@ -1,4 +1,4 @@
-package users
+package usrsvc
 
 import (
 	"context"
