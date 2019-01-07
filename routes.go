@@ -20,13 +20,17 @@ var (
 )
 
 func Register(r *mux.Router) {
+	addMiddleware(r)
+	addV1Routes(r.PathPrefix("/v1").Subrouter())
+
+}
+
+func addMiddleware(r *mux.Router) {
 	r.Use(addContentTypeMiddleware)
 	r.Use(acceptContentType())
 	r.Use(handlers.CompressHandler)
 	recoveryHandler := handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))
 	r.Use(recoveryHandler)
-	addV1Routes(r.PathPrefix("/v1").Subrouter())
-
 }
 
 func addV1Routes(r *mux.Router) {
