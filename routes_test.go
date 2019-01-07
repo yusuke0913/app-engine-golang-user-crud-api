@@ -37,7 +37,7 @@ var apiTests = []apiTest{
 	{
 		name:                "Create_WhenPassingEmptyName_ReturnError",
 		method:              "POST",
-		url:                 "/users",
+		url:                 "/users/v1",
 		urlVars:             nil,
 		request:             userCreateRequest{User: &User{Name: ""}},
 		expectedStatusCode:  http.StatusInternalServerError,
@@ -48,7 +48,7 @@ var apiTests = []apiTest{
 	{
 		name:                "Create_ByUser_ReturnCreatedUser",
 		method:              "POST",
-		url:                 "/users",
+		url:                 "/users/v1",
 		urlVars:             nil,
 		request:             userCreateRequest{User: &User{Name: fake.FirstName()}},
 		expectedStatusCode:  http.StatusOK,
@@ -60,7 +60,7 @@ var apiTests = []apiTest{
 	{
 		name:   "Find_ByNotExistingUser_ReturnError",
 		method: "GET",
-		url:    "/users/DummyId",
+		url:    "/users/v1/DummyId",
 		urlVars: map[string]string{
 			"id": "DummyId",
 		},
@@ -72,7 +72,7 @@ var apiTests = []apiTest{
 	{
 		name:   "Find_ByExistingUser_ReturnTheUser",
 		method: "GET",
-		url:    "/users/DummyId",
+		url:    "/users/v1/DummyId",
 		urlVars: map[string]string{
 			"id": "DummyId",
 		},
@@ -87,7 +87,7 @@ var apiTests = []apiTest{
 	{
 		name:   "Update_WhenPasingNonExistingUser_ReturnError",
 		method: "PUT",
-		url:    "/users/DummyId",
+		url:    "/users/v1/DummyId",
 		urlVars: map[string]string{
 			"id": "DummyId",
 		},
@@ -100,7 +100,7 @@ var apiTests = []apiTest{
 	{
 		name:   "Update_WhenPasingExistingUser_ReturnNonError",
 		method: "PUT",
-		url:    "/users/DummyId",
+		url:    "/users/v1/DummyId",
 		urlVars: map[string]string{
 			"id": "DummyId",
 		},
@@ -115,7 +115,7 @@ var apiTests = []apiTest{
 	{
 		name:   "Delete_WhenPasingNotExistingUser_ReturnError",
 		method: "DELETE",
-		url:    "/users/DummyId",
+		url:    "/users/v1/DummyId",
 		urlVars: map[string]string{
 			"id": "DummyId",
 		},
@@ -127,7 +127,7 @@ var apiTests = []apiTest{
 	{
 		name:   "Delete_WhenPasingExistingUser_ReturnNonError",
 		method: "DELETE",
-		url:    "/users/DummyId",
+		url:    "/users/v1/DummyId",
 		urlVars: map[string]string{
 			"id": "DummyId",
 		},
@@ -141,7 +141,7 @@ var apiTests = []apiTest{
 	{
 		name:                "List_ReturnUserList",
 		method:              "GET",
-		url:                 "/users/list",
+		url:                 "/users/v1/list",
 		urlVars:             nil,
 		request:             nil,
 		setupFunc:           setupDummyUserListWithApiTestCase,
@@ -169,7 +169,7 @@ func TestUsersApiHandler(t *testing.T) {
 	}
 	defer inst.Close()
 
-	req, err := inst.NewRequest("GET", "/users", nil)
+	req, err := inst.NewRequest("GET", "/users/v1", nil)
 	if err != nil {
 		t.Fatalf("err:%v", err)
 	}

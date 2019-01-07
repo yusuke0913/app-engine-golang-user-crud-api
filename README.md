@@ -1,8 +1,16 @@
 # app-engine-golang-user-crud-api
-This is simple CRUD operation APIs to manage User data on Google App Engine and Datastore.
+This package implements a CRUD operation APIs to manage User data on Google App Engine and Datastore.
 
 # Example
-```
+
+
+## Directory layout
+    .
+    ├── app.yaml
+    ├── main.go
+
+- main.go
+```go
 package main
 
 import (
@@ -19,5 +27,19 @@ func main() {
 	http.Handle("/", r)
 	appengine.Main()
 }
-
 ```
+
+- app.yaml
+```yaml
+runtime: go
+api_version: go1
+
+handlers:
+  # All URLs are handled by the Go application script
+  - url: /.*
+    script: _go_app
+
+skip_files:
+  - .*node_modules
+  - .*vendor
+````

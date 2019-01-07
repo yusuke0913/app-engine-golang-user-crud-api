@@ -19,6 +19,10 @@ func Register(r *mux.Router) {
 	r.Use(responseHeaderMiddleware)
 	r.Use(handlers.CompressHandler)
 
+	addV1Routes(r.PathPrefix("/v1").Subrouter())
+}
+
+func addV1Routes(r *mux.Router) {
 	r.HandleFunc("/users", createUser).Methods("POST")
 	r.HandleFunc("/users", listUsers).Methods("GET")
 	r.HandleFunc("/users/{id}", findUser).Methods("GET")
