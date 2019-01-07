@@ -15,11 +15,18 @@ import (
 	"google.golang.org/appengine"
 )
 
-func Register(r *mux.Router) {
-	r.Use(responseHeaderMiddleware)
-	r.Use(handlers.CompressHandler)
+var (
+	contentTypeApplicationJson = http.CanonicalHeaderKey("Content-Type")
+)
 
+func Register(r *mux.Router) {
+	r.Use(addContentTypeMiddleware)
+	r.Use(acceptContentType())
+	r.Use(handlers.CompressHandler)
+	recoveryHandler := handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))
+	r.Use(recoveryHandler)
 	addV1Routes(r.PathPrefix("/v1").Subrouter())
+
 }
 
 func addV1Routes(r *mux.Router) {
@@ -110,6 +117,7 @@ func newRepository() *datastoreRepository {
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
+	log.Printf("content-type:%v", r.Header.Get("Content-Type"))
 	ctx := appengine.NewContext(r)
 
 	var p userCreateRequest
