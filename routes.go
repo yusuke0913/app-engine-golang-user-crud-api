@@ -1,4 +1,4 @@
-package main
+package users
 
 import (
 	"bytes"
@@ -10,11 +10,15 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
 )
 
-func AddUserHandler(r *mux.Router) {
+func Register(r *mux.Router) {
+	r.Use(responseHeaderMiddleware)
+	r.Use(handlers.CompressHandler)
+
 	r.HandleFunc("/users", createUser).Methods("POST")
 	r.HandleFunc("/users", listUsers).Methods("GET")
 	r.HandleFunc("/users/{id}", findUser).Methods("GET")
